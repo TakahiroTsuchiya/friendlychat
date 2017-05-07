@@ -1,16 +1,40 @@
 {
-  "messages" : {
-    "-K2ib4H77rj0LYewF7dP" : {
-      "text" : "Hello",
-      "name" : "anonymous"
+  "FriendlyChat" : {
+    "messages" : {
+      "-K2ib4H77rj0LYewF7dP" : {
+        "name" : "Romain",
+        "photoUrl" : "https://randomuser.me/api/portraits/thumb/men/83.jpg",
+        "code" : "1234567890",
+        "text" : "抽選結果　：　外れ"
+      },
+      "-K2ib5JHRbbL0NrztUfO" : {
+        "name" : "Rhonda",
+        "photoUrl" : "https://randomuser.me/api/portraits/thumb/women/83.jpg",
+        "code" : "2345678901",
+        "text" : "抽選結果　：　外れ"
+      },
+      "-K2ib62mjHh34CAUbide" : {
+        "name" : "Vivienne",
+        "photoUrl" : "https://randomuser.me/api/portraits/thumb/women/51.jpg",
+        "code" : "3456789012",
+        "text" : "抽選結果　：　あたり"
+      },
+      "-KjX-Dw_PPeWtg7lWLrD" : {
+        "name" : "捨てアカウント",
+        "photoUrl" : "https://randomuser.me/api/portraits/thumb/men/51.jpg",
+        "code" : "4567890123",
+        "text" : "抽選中です"
+      }
     },
-    "-K2ib5JHRbbL0NrztUfO" : {
-      "text" : "How are you",
-      "name" : "anonymous"
-    },
-    "-K2ib62mjHh34CAUbide" : {
-      "text" : "I am fine",
-      "name" : "anonymous"
+    "searchResult" : {
+      "000001" : {
+        "count" : 10,
+        "white_list" : [ "r4kC5j9YGKUXaUnvGLCoFwOxjp12" ]
+      },
+      "000002" : {
+        "black_list" : [ "r4kC5j9YGKUXaUnvGLCoFwOxjp12" ],
+        "count" : 20
+      }
     }
   }
 }

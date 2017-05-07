@@ -15,9 +15,70 @@
  */
 
 // TODO(DEVELOPER): Import the Cloud Functions for Firebase and the Firebase Admin modules here.
+// Import the Firebase SDK for Google Cloud Functions.
+const functions = require('firebase-functions');
+// Import and initialize the Firebase Admin SDK.
+const admin = require('firebase-admin');
+admin.initializeApp(functions.config().firebase);
 
 // TODO(DEVELOPER): Write the addWelcomeMessages Function here.
 
 // TODO(DEVELOPER): Write the blurOffensiveImages Function here.
 
 // TODO(DEVELOPER): Write the sendNotifications Function here.
+/***************************************************************************
+ * When : user input campaign code (add Firebase Realtime Database)
+ * What : send notifications
+ ***************************************************************************
+ */
+// Sends a notifications to all users when a new message is posted.
+//exports.sendNotifications = functions.database.ref('/messages/{messageId}').onWrite(event => {
+exports.sendNotifications = functions.database.ref('/FriendlyChat/messages/{messageId}').onWrite(event => {
+  const snapshot = event.data;
+  // Only send a notification when a message has been created.
+  if (snapshot.previous.val()) {
+    return;
+  }
+
+  // Notification details.
+  const text = snapshot.val().text;
+  const payload = {
+    notification: {
+      title: `${snapshot.val().name} posted ${text ? 'a message' : 'an image'}`,
+      body: text ? (text.length <= 100 ? text : text.substring(0, 97) + '...') : '',
+//      icon: snapshot.val().photoUrl || '/images/profile_placeholder.png',
+      icon: '/images/profile_placeholder.png',
+      click_action: `https://${functions.config().firebase.authDomain}`
+    }
+  };
+
+  // Get the list of device tokens.
+//  return admin.database().ref('fcmTokens').once('value').then(allTokens => {
+  return admin.database().ref('/FriendlyChat/fcmTokens').once('value').then(allTokens => {
+
+    if (allTokens.val()) {
+      // Listing all tokens.
+      const tokens = Object.keys(allTokens.val());
+
+      // Send notifications to all tokens.
+      return admin.messaging().sendToDevice(tokens, payload).then(response => {
+        // For each message check if there was an error.
+        const tokensToRemove = [];
+        response.results.forEach((result, index) => {
+          const error = result.error;
+          if (error) {
+            console.error('Failure sending notification to', tokens[index], error);
+            // Cleanup the tokens who are not registered anymore.
+            if (error.code === 'messaging/invalid-registration-token' ||
+                error.code === 'messaging/registration-token-not-registered') {
+              tokensToRemove.push(allTokens.ref.child(tokens[index]).remove());
+            }
+          }
+        });
+        return Promise.all(tokensToRemove);
+      });
+    }
+  });
+});
+
+//
